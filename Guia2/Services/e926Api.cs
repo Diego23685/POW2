@@ -13,20 +13,20 @@ namespace Guia2.Services
             PropertyNameCaseInsensitive = true
         };
 
-        // Lista de tags que NO queremos mostrar (violencia, sexual, etc.)
+        
         private static readonly HashSet<string> _bannedTags = new(StringComparer.OrdinalIgnoreCase)
         {
             "gore","blood","violence","weapon","injury","dead","death",
             "nudity","implied_nudity","nsfw","fetish","explicit","sexual",
             "rape","torture","smoking","drug","alcohol","cigarette",
-            // añade cualquiera que detectes no apto en pruebas
+           
         };
 
         public E926Api(IHttpClientFactory factory) => _factory = factory;
 
         public async Task<PostIndexResponse> SearchAsync(string tags, int limit = 24, int page = 1, CancellationToken ct = default)
         {
-            // Forzamos rating seguro y aplicamos la búsqueda del usuario
+           
             var q = string.IsNullOrWhiteSpace(tags) ? "rating:s" : $"{tags} rating:s";
 
             var client = _factory.CreateClient("e926");
@@ -37,7 +37,7 @@ namespace Guia2.Services
             var data = await resp.Content.ReadFromJsonAsync<PostIndexResponse>(J, ct)
                        ?? new PostIndexResponse { posts = Array.Empty<Post>() };
 
-            // Filtrar rating no seguro (por si acaso) y limpiar tags
+            
             data.posts = data.posts
                 .Where(p => string.Equals(p.rating, "s", StringComparison.OrdinalIgnoreCase))
                 .Select(CleanPost)
@@ -70,7 +70,7 @@ namespace Guia2.Services
                 p.tags.species = p.tags.species.Where(t => !_bannedTags.Contains(t)).ToArray();
                 p.tags.character = p.tags.character.Where(t => !_bannedTags.Contains(t)).ToArray();
                 p.tags.artist = p.tags.artist.Where(t => !_bannedTags.Contains(t)).ToArray();
-                // meta suele incluir info técnica; no la mostramos y no hace falta limpiarla para público infantil
+               
             }
             return p;
         }
