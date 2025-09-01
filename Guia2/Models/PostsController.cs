@@ -10,7 +10,7 @@ namespace Guia2.Controllers
 
         public PostsController(Ie926Api api) => _api = api;
 
-        // 🔥 Forzamos artista por defecto
+        // Forzamos artista por defecto
         private const string DefaultArtist = "darkalcaline";
 
         // GET /Posts
