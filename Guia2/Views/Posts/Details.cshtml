@@ -1,0 +1,38 @@
+@model Guia2.Models.Post
+@{
+  ViewData["Title"] = $"Post #{Model.id}";
+  var img = Model.sample?.url ?? Model.file?.url ?? Model.preview?.url ?? "";
+}
+
+<div class="row g-4">
+  <div class="col-md-6">
+    <img class="img-fluid border rounded" src="@img" alt="post @Model.id" />
+  </div>
+  <div class="col-md-6">
+    <h1 class="h4">Post #@Model.id</h1>
+    <p class="mb-1"><strong>Rating:</strong> @Model.rating</p>
+    <p class="mb-1"><strong>Score:</strong> @Model.score?.total (@Model.score?.up / @Model.score?.down)</p>
+    <p class="mb-1"><strong>Dimensiones:</strong> @Model.file?.width × @Model.file?.height (@Model.file?.ext)</p>
+
+    @if (Model.tags is not null)
+    {
+      <hr />
+      @if (Model.tags.general?.Any() == true)
+      { <p><strong>Tags (general):</strong> @string.Join(", ", Model.tags.general.Take(15))</p> }
+      @if (Model.tags.artist?.Any() == true)
+      { <p><strong>Artista:</strong> @string.Join(", ", Model.tags.artist.Take(5))</p> }
+      @if (Model.tags.character?.Any() == true)
+      { <p><strong>Personajes:</strong> @string.Join(", ", Model.tags.character.Take(10))</p> }
+      @if (Model.tags.species?.Any() == true)
+      { <p><strong>Especies:</strong> @string.Join(", ", Model.tags.species.Take(10))</p> }
+    }
+
+    @if (!string.IsNullOrWhiteSpace(Model.description))
+    {
+      <hr />
+      <p>@Model.description</p>
+    }
+
+    <a class="btn btn-secondary mt-3" href="javascript:history.back()">Volver</a>
+  </div>
+</div>

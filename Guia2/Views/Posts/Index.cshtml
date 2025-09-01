@@ -1,0 +1,49 @@
+@model IEnumerable<Guia2.Models.Post>
+@{
+  ViewData["Title"] = "Resultados";
+  var q = (string?)ViewData["Query"] ?? "";
+  var page = (int)(ViewData["Page"] ?? 1);
+}
+
+<h1 class="mb-3">Resultados</h1>
+@if (!string.IsNullOrWhiteSpace(q))
+{
+  <p class="text-muted">Tags: <strong>@q</strong></p>
+}
+
+@if (!Model.Any())
+{
+  <div class="alert alert-info">No se encontraron resultados. Intenta con otros tags (ej.: <code>wolf</code>, <code>bird</code>, <code>smile</code>).</div>
+}
+else
+{
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3">
+  @foreach (var p in Model)
+  {
+    var thumb = p.preview?.url ?? p.sample?.url ?? p.file?.url ?? "";
+    <div class="col">
+      <div class="card h-100 shadow-sm">
+        <img class="card-img-top" src="@thumb" alt="post @p.id" style="object-fit:cover; height:220px" />
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <span class="badge bg-success">rating: @p.rating</span>
+            <span class="text-muted">score: @p.score?.total</span>
+          </div>
+          <a class="btn btn-primary btn-sm mt-2" asp-action="Details" asp-route-id="@p.id">Ver detalle</a>
+        </div>
+      </div>
+    </div>
+  }
+  </div>
+
+  <nav class="mt-3">
+    <ul class="pagination">
+      <li class="page-item @(page<=1?"disabled":"")">
+        <a class="page-link" asp-action="Index" asp-route-q="@q" asp-route-page="@(page-1)">Anterior</a>
+      </li>
+      <li class="page-item">
+        <a class="page-link" asp-action="Index" asp-route-q="@q" asp-route-page="@(page+1)">Siguiente</a>
+      </li>
+    </ul>
+  </nav>
+}
